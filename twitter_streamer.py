@@ -16,26 +16,28 @@ language_dict={}
 class StdOutListener(StreamListener):
 
 	def on_data(self, data):
+		new_data = {}
 		json_data = json.loads(data)
 		if 'geo' not in data:
 			return True
-		if json_data['geo']:
-			f = open('geo_lang.csv','a')
-			lon, lat = json_data['geo']['coordinates']
-			lang = json_data['lang']
-			string = '{0},{1},{2}\n'.format(lon,lat,lang)
-			f.write(string)
-			f.close()
+		if json_data['coordinates']:
+			if json_data['lang'] == 'en':
+				#TODO fix quotes here. Need to all be double quotes except for in the text field
+				new_data = "{'created_at':"
+				new_data = new_data + json.dumps(json_data['created_at'],separators=(',',':')) + ','
+				new_data = new_data + "'id':" + json.dumps(json_data['id'],separators=(',',':')) + ','
+				new_data = new_data + "'text':" + json.dumps(json_data['text'],separators=(',',':')) + ','
+				new_data = new_data + "'coordinates':" + json.dumps(json_data['coordinates'],separators=(',',':')) + ','
+				new_data = new_data + "'place':" + json.dumps(json_data['place'],separators=(',',':')) + ','
+				new_data = new_data + "'entities':" + json.dumps(json_data['entities'],separators=(',',':')) + ','
+				new_data = new_data + "'user':{'id':" + json.dumps(json_data['user']['id'],separators=(',',':')) + '}'
+				new_data = new_data + "}"
 
-			if lang in language_dict:
-				language_dict[lang] = language_dict[lang]+1
-			else:
-				language_dict[lang] = 1
+		print
+		print new_data
+		#if new_data != {}:
+		#		print json.loads(new_data)
 
-		f = open('language_stats.txt','w')
-		f.write(str(language_dict))
-		f.close()
-		
 		return True
 
 	def on_error(self, status_code):
@@ -44,7 +46,6 @@ class StdOutListener(StreamListener):
 		else:
 			print status_code
 		return False
-
 
 if __name__ == "__main__":
 
@@ -55,6 +56,5 @@ if __name__ == "__main__":
 	stream = Stream(auth, l)
 
 	# This line filter Twitter Streams to capture data by the keywords
-	#stream.sample(languages=['es'])
 	stream.filter(locations=[-126.00,25.00,-50.00,50.00])
 	
