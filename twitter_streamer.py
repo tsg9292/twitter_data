@@ -4,6 +4,7 @@ from tweepy import Stream
 
 import json
 import os
+from sys import stdout
 
 #Variables that contains the user credentials to access Twitter API
 access_token = "156509990-2OENzM4s6crQlUI9V6geS54tGEN0pEQVQ7Pvb2Xr"
@@ -45,7 +46,9 @@ class StdOutListener(StreamListener):
 		if new_data != {}:
 			f2 = open('json_tweets','a')
 			if fsize%1000 <= 25 and fsize%1000 >=1:
-				print '===== Number of Tweets: {0}  File size: {1} ====='.format(tweet_count, fsize)
+				output='===== Number of Tweets: {0}  File size: {1} ====='.format(tweet_count, fsize)
+				stdout.write("\r%s"%output)
+				stdout.flush()
 
 			# if the file size if bigger than ~15Gb, exit
 			if fsize >= 16106127360:
@@ -76,5 +79,6 @@ if __name__ == "__main__":
 	stream = Stream(auth, l)
 
 	# This line filter Twitter Streams to capture data by the keywords
+	#				[min(long),min(lat),max(long),max(lat)]
 	stream.filter(locations=[-126.00,25.00,-50.00,50.00])
 	
