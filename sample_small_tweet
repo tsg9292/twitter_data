@@ -1,0 +1,33 @@
+{
+	"created_at":"Tue Mar 17 03:15:15 +0000 2015",
+	"id":577669496950894592,
+	"text":"I Juss realized how messed up I am \ud83d\ude12\ud83d\ude29\ud83d\ude14",
+	"coordinates":{
+		"type":"Point",
+		"coordinates":[-75.211112,39.97207]
+	},
+	"place":{
+		"full_name":"Philadelphia, PA",
+		"url":"https://api.twitter.com/1.1/geo/id/e4a0d228eb6be76b.json",
+		"country":"United States",
+		"place_type":"city",
+		"bounding_box":{
+			"type":"Polygon",
+			"coordinates":[[[-75.280284,39.871811],[-75.280284,40.13792],[-74.955712,40.13792],[-74.955712,39.871811]]]
+		},
+		"country_code":"US",
+		"attributes":{},
+		"id":"e4a0d228eb6be76b",
+		"name":"Philadelphia"
+	},
+	"entities":{
+		"user_mentions":[],
+		"symbols":[],
+		"trends":[],
+		"hashtags":[],
+		"urls":[]
+	},
+	"user":{
+		"id":2282673372
+	}
+}
