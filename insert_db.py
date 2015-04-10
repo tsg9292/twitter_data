@@ -104,7 +104,12 @@ def insert_hashtags():
 	cur = conn.cursor()
 	with open('json_tweets') as f:
 		iterator = 1
+		iterator2 = 0
 		for line in f:
+			if iterator < 13150000:
+				iterator = iterator + 1
+				print iterator
+				continue
 			json_obj = json.loads(line)
 			hashtags = json_obj['entities']['hashtags']
 			if hashtags != []:
@@ -117,82 +122,36 @@ def insert_hashtags():
 					if output == []:
 						cur.execute("SELECT MAX(hashtag_ID) from hashtags;")
 						hashtag_id = cur.fetchall()[0][0]+1
-						print 'no hashtag in db... inserting hashtag_id: ' + str(hashtag_id)
 						sql = "INSERT INTO hashtags (hashtag_id, hashtag) VALUES ({0}, {1});".format(
 													hashtag_id,
 													hashtag)
 						cur.execute(sql)
 						conn.commit()
+						iterator2 = iterator2 + 1
 					
 
+
 			if (iterator %1000  == 0):
-				
 				output = ''
 				if iterator < 1000:
-					output = '==== Number of Tweets inserted into the database: {} ===='.format(iterator)
+					output = '==== Number of Tweets processed: {0}  Hashtags inserted: {1} ===='.format(iterator, iterator2)
 				if iterator >= 1000 and iterator < 1000000:
-					output = '==== Number of Tweets inserted into the database: {} thousand ===='.format(iterator/1000)
+					output = '==== Number of Tweets processed: {0} thousand  Hashtags inserted: {1} ===='.format(iterator/1000, iterator2)
 				if iterator >= 1000000:
 					num = "{0:.2f}".format(float(iterator)/1000000)
-					output = '=== Number of Tweets inserted into the database: {} million ===='.format(num)
+					output = '==== Number of Tweets processed: {0} million  Hashtags inserted: {1} ===='.format(num, iterator2)
 				stdout.write("\r%s"%output)
 				stdout.flush()
-			
-			iterator = iterator+1		
+			iterator = iterator+1					
+	
 	cur.close()
 	conn.close()
 
 	print
 	print 'Hashtag injection successful!'
 
-def insert_tweet_hashtags():
-	conn = psycopg2.connect("dbname='twitter' user='tsg9292' host='localhost' password='post'")
-	cur = conn.cursor()
-	with open('json_tweets') as f:
-		iterator = 1
-		iterator2 = 0
-		for line in f:
-			json_obj = json.loads(line)
-			tweet_id = json_obj['id']	
-
-			hashtags = json_obj['entities']['hashtags']
-			if hashtags != []: # hashtags exist for the tweet
-				for tag in hashtags:
-					hashtag = tag['text']
-					hashtag = repr(hashtag).strip('u')
-					cur.execute("SELECT hashtag_id from hashtags where hashtag = %s;"% hashtag)
-					hashtag_id = cur.fetchall[0][0]
-
-					sql = "INSERT INTO tweet_hashtags (tweet_id, hashtag_id) VALUES ({0}, {1})".format(
-									tweet_id,
-									hashtag_id)
-					try:
-						cur.execute(sql)
-					except psycopg2.IntegrityError:
-						conn.rollback()
-					else:
-			 			conn.commit()
-						iterator2 = iterator2+1
-
-			if (iterator %1000  == 0):
-				output = ''
-			if iterator < 1000:
-				output = '==== Number of Tweets processed: {0}  Hashtags inserted: {1} ===='.format(iterator, iterator2)
-			if iterator >= 1000 and iterator < 1000000:
-				output = '==== Number of Tweets processed: {0} thousand  Hashtags inserted: {1} ===='.format(iterator/1000, iterator2)
-			if iterator >= 1000000:
-				num = "{0:.2f}".format(float(iterator)/1000000)
-				output = '=== Number of Tweets processed: {0} million  Hashtags inserted: {1} ===='.format(num, iterator2)
-			stdout.write("\r%s"%output)
-			stdout.flush()
-			iterator = iterator+1					
-
-	cur.close()
-	conn.close()
-	print 
-	print 'tweet_hashtags table inserted successfully!'
 
 if __name__ == '__main__':
 	#insert_tweets()
-	insert_hashtags()
-	#insert_tweet_hashtags()
+	#insert_hashtags()
+	insert_tweet_hashtags()

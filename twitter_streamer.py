@@ -16,8 +16,8 @@ consumer_secret = "vMZ0Ek28yv3jcnjVh4GDwMvAwPbyuT0VsA5qJNAYxDzP8iirnX"
 class StdOutListener(StreamListener):
 
 	def on_data(self, data):
-		if os.path.isfile('meta_tweets'):
-			with open('meta_tweets') as f:
+		if os.path.isfile('middle_east_meta'):
+			with open('middle_east_meta') as f:
 				line = f.read()
 				tweet_count,fsize = line.split(',')
 				tweet_count = int(tweet_count)
@@ -44,7 +44,7 @@ class StdOutListener(StreamListener):
 				+ "}"
 
 		if new_data != {}:
-			f2 = open('json_tweets','a')
+			f2 = open('middle_east_tweets','a')
 			if fsize%1000 <= 25 and fsize%1000 >=1:
 				output='===== Number of Tweets: {0}  File size: {1} ====='.format(tweet_count, fsize)
 				stdout.write("\r%s"%output)
@@ -58,8 +58,8 @@ class StdOutListener(StreamListener):
 			tweet_count = tweet_count + 1
 			
 			f2.close()
-			fsize = os.path.getsize('json_tweets')
-			with open('meta_tweets','w') as f1:
+			fsize = os.path.getsize('middle_east_tweets')
+			with open('middle_east_meta','w') as f1:
 					f1.write('{0},{1}\n'.format(tweet_count,fsize))
 		return True
 
