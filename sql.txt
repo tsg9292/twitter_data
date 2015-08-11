@@ -1,0 +1,1 @@
+select distinct(h.hashtag) from tweet_hashtags th, hashtags h, isis_tweets it where th.tweet_id = it.tweet_id and th.hashtag_id = h.hashtag_id;
